@@ -1,24 +1,32 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import { useCart } from "../context/CartContext";
+
+// ✅ CRA: env must start with REACT_APP_
+// In Netlify set: REACT_APP_API_URL = https://your-backend.onrender.com
+const API_ROOT =
+  (process.env.REACT_API_URL || "http://localhost:3000").replace(/\/$/, "");
 
 export default function Products() {
   const [products, setProducts] = useState([]);
   const { addToCart } = useCart();
- const API_ROOT =
-  process.env.REACT_API_URL?.replace(/\/$/, "") || "http://localhost:3000";
-
-const API_BASE = API_ROOT;      // used for API calls
-const SERVER_BASE = API_ROOT;
-
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/products`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch");
-        return res.json();
-      })
-      .then((data) => setProducts(data))
-      .catch(() => alert("Failed to load products"));
+    let alive = true;
+
+    const load = async () => {
+      try {
+        const res = await axios.get(`${API_ROOT}/api/products`);
+        if (alive) setProducts(Array.isArray(res.data) ? res.data : []);
+      } catch (e) {
+        alert("Failed to load products");
+      }
+    };
+
+    load();
+    return () => {
+      alive = false;
+    };
   }, []);
 
   const styles = {
@@ -111,6 +119,13 @@ const SERVER_BASE = API_ROOT;
     },
   };
 
+  const imgSrc = (p) => {
+    const path = p?.imageUrl || p?.image || "";
+    if (!path) return "";
+    if (path.startsWith("http")) return path;
+    return `${API_ROOT}${path}`; // backend serves /uploads
+  };
+
   return (
     <div style={styles.page}>
       <div style={styles.header}>
@@ -138,12 +153,7 @@ const SERVER_BASE = API_ROOT;
               }
             >
               <div style={styles.imageWrap}>
-                <img
-  src={p.image?.startsWith("http") ? p.image : `${SERVER_BASE}${p.image}`}
-  alt={p.name}
-  style={styles.image}
-/>
-
+                <img src={imgSrc(p)} alt={p.name} style={styles.image} />
               </div>
 
               <div style={styles.name}>{p.name}</div>
@@ -151,9 +161,7 @@ const SERVER_BASE = API_ROOT;
 
               <button
                 style={styles.button}
-                onClick={() =>
-                  addToCart({ name: p.name, price: p.price })
-                }
+                onClick={() => addToCart({ name: p.name, price: p.price })}
               >
                 Add to Cart
               </button>

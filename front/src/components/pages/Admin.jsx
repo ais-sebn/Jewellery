@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-const API_ROOT =
-  process.env.REACT_API_URL?.replace(/\/$/, "") || "http://localhost:3000";
 
-const API_BASE = API_ROOT;      // used for API calls
-const SERVER_BASE = API_ROOT;
+const API_ROOT =
+  (process.env.REACT_API_URL || "http://localhost:3000").replace(/\/$/, "");
 
 export default function Admin() {
   const [products, setProducts] = useState([]);
@@ -15,7 +13,6 @@ export default function Admin() {
   const [price, setPrice] = useState("");
   const [imageFile, setImageFile] = useState(null);
 
-  // 🔧 customer edit state
   const [editingUserId, setEditingUserId] = useState(null);
   const [editUsername, setEditUsername] = useState("");
   const [editPassword, setEditPassword] = useState("");
@@ -47,10 +44,7 @@ export default function Admin() {
       letterSpacing: "-0.5px",
       color: "#f8fafc",
     },
-    subtitle: {
-      fontSize: "14px",
-      color: "#cbd5e1",
-    },
+    subtitle: { fontSize: "14px", color: "#cbd5e1" },
     layout: {
       maxWidth: "1200px",
       margin: "0 auto",
@@ -147,16 +141,8 @@ export default function Admin() {
       cursor: disabled ? "not-allowed" : "pointer",
       boxShadow: disabled ? "none" : "0 14px 34px rgba(59,130,246,0.22)",
     }),
-    smallNote: {
-      marginTop: "10px",
-      fontSize: "12px",
-      color: "#94a3b8",
-      lineHeight: 1.5,
-    },
-    list: {
-      display: "grid",
-      gap: "12px",
-    },
+    smallNote: { marginTop: "10px", fontSize: "12px", color: "#94a3b8", lineHeight: 1.5 },
+    list: { display: "grid", gap: "12px" },
     productRow: {
       display: "flex",
       gap: "12px",
@@ -174,10 +160,7 @@ export default function Admin() {
       background: "rgba(255,255,255,0.08)",
       flex: "0 0 auto",
     },
-    productInfo: {
-      flex: 1,
-      minWidth: 0,
-    },
+    productInfo: { flex: 1, minWidth: 0 },
     productName: {
       margin: 0,
       fontSize: "14px",
@@ -188,14 +171,7 @@ export default function Admin() {
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
     },
-    productMeta: {
-      marginTop: "6px",
-      fontSize: "13px",
-      color: "#cbd5e1",
-      display: "flex",
-      gap: "10px",
-      flexWrap: "wrap",
-    },
+    productMeta: { marginTop: "6px", fontSize: "13px", color: "#cbd5e1", display: "flex", gap: "10px", flexWrap: "wrap" },
     dangerBtn: (disabled) => ({
       padding: "10px 12px",
       borderRadius: "12px",
@@ -216,36 +192,16 @@ export default function Admin() {
       cursor: disabled ? "not-allowed" : "pointer",
       whiteSpace: "nowrap",
     }),
-    rightCol: {
-      display: "grid",
-      gap: "18px",
-      alignItems: "start",
-    },
+    rightCol: { display: "grid", gap: "18px", alignItems: "start" },
     orderCard: {
       borderRadius: "16px",
       padding: "14px",
       background: "rgba(2,6,23,0.45)",
       border: "1px solid rgba(255,255,255,0.10)",
     },
-    orderTitle: {
-      margin: 0,
-      fontSize: "14px",
-      fontWeight: 900,
-      color: "#f8fafc",
-    },
-    orderLine: {
-      marginTop: "6px",
-      fontSize: "13px",
-      color: "#cbd5e1",
-      lineHeight: 1.6,
-    },
-    orderList: {
-      margin: "10px 0 0",
-      paddingLeft: "18px",
-      color: "#cbd5e1",
-      fontSize: "13px",
-      lineHeight: 1.6,
-    },
+    orderTitle: { margin: 0, fontSize: "14px", fontWeight: 900, color: "#f8fafc" },
+    orderLine: { marginTop: "6px", fontSize: "13px", color: "#cbd5e1", lineHeight: 1.6 },
+    orderList: { margin: "10px 0 0", paddingLeft: "18px", color: "#cbd5e1", fontSize: "13px", lineHeight: 1.6 },
     userRow: {
       display: "grid",
       gap: "10px",
@@ -254,17 +210,8 @@ export default function Admin() {
       background: "rgba(2,6,23,0.45)",
       border: "1px solid rgba(255,255,255,0.10)",
     },
-    userTop: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      gap: "12px",
-    },
-    userLeft: {
-      minWidth: 0,
-      display: "grid",
-      gap: "6px",
-    },
+    userTop: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px" },
+    userLeft: { minWidth: 0, display: "grid", gap: "6px" },
     userName: {
       margin: 0,
       fontSize: "14px",
@@ -275,76 +222,64 @@ export default function Admin() {
       whiteSpace: "nowrap",
       maxWidth: "320px",
     },
-    userSub: {
-      fontSize: "13px",
-      color: "#cbd5e1",
-      display: "flex",
-      gap: "10px",
-      flexWrap: "wrap",
-      alignItems: "center",
-    },
-    rolePill: {
-      fontSize: "12px",
-      padding: "6px 10px",
-      borderRadius: "999px",
-      background: "rgba(255,255,255,0.06)",
-      border: "1px solid rgba(255,255,255,0.12)",
-      color: "#cbd5e1",
-      whiteSpace: "nowrap",
-    },
-    userActions: {
-      display: "flex",
-      gap: "10px",
-      flexWrap: "wrap",
-      justifyContent: "flex-end",
-    },
-    editGrid: {
-      display: "grid",
-      gap: "10px",
-    },
-    empty: {
-      color: "#94a3b8",
-      fontSize: "14px",
-      padding: "10px 0 0",
-    },
+    userSub: { fontSize: "13px", color: "#cbd5e1", display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" },
+    rolePill: { fontSize: "12px", padding: "6px 10px", borderRadius: "999px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#cbd5e1", whiteSpace: "nowrap" },
+    userActions: { display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "flex-end" },
+    editGrid: { display: "grid", gap: "10px" },
+    empty: { color: "#94a3b8", fontSize: "14px", padding: "10px 0 0" },
   };
 
-  // ✅ simple axios GETs
-  const loadProducts = async () => {
-    const res = await axios.get(`${API_BASE}/api/products`);
-    setProducts(res.data || []);
+  const imgSrc = (p) => {
+    const path = p?.imageUrl || p?.image || "";
+    if (!path) return "";
+    if (path.startsWith("http")) return path;
+    return `${API_ROOT}${path}`;
   };
 
-  const loadOrders = async () => {
-    const res = await axios.get(`${API_BASE}/api/orders`);
-    setOrders(res.data || []);
-  };
-
-  const loadUsers = async () => {
-    const res = await axios.get(`${API_BASE}/api/auth/users`);
-    setUsers(res.data || []);
-  };
-
-  const loadAll = async () => {
-    setLoading(true);
-    try {
-      await loadProducts();
-      await loadOrders();
-      await loadUsers();
-    } catch (err) {
-      alert(err?.response?.data?.msg || err.message || "Admin load failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // ✅ NO loadAll dependency issue: run inside useEffect directly
   useEffect(() => {
-    loadAll();
+    let alive = true;
+
+    const run = async () => {
+      setLoading(true);
+      try {
+        const [pRes, oRes, uRes] = await Promise.all([
+          axios.get(`${API_ROOT}/api/products`),
+          axios.get(`${API_ROOT}/api/orders`),
+          axios.get(`${API_ROOT}/api/auth/users`),
+        ]);
+
+        if (!alive) return;
+
+        setProducts(Array.isArray(pRes.data) ? pRes.data : []);
+        setOrders(Array.isArray(oRes.data) ? oRes.data : []);
+        setUsers(Array.isArray(uRes.data) ? uRes.data : []);
+      } catch (err) {
+        alert(err?.response?.data?.msg || err.message || "Admin load failed");
+      } finally {
+        if (alive) setLoading(false);
+      }
+    };
+
+    run();
+    return () => {
+      alive = false;
+    };
   }, []);
 
-  // ✅ product upload
+  const reloadProducts = async () => {
+    const res = await axios.get(`${API_ROOT}/api/products`);
+    setProducts(Array.isArray(res.data) ? res.data : []);
+  };
+
+  const reloadUsers = async () => {
+    const res = await axios.get(`${API_ROOT}/api/auth/users`);
+    setUsers(Array.isArray(res.data) ? res.data : []);
+  };
+
   const addProduct = async () => {
-    if (!name.trim() || !price || !imageFile) return alert("Name, price and image are required");
+    if (!name.trim() || !price || !imageFile)
+      return alert("Name, price and image are required");
     if (loading) return;
 
     setLoading(true);
@@ -354,7 +289,7 @@ export default function Admin() {
       fd.append("price", String(price));
       fd.append("image", imageFile);
 
-      await axios.post(`${API_BASE}/api/products`, fd, {
+      await axios.post(`${API_ROOT}/api/products`, fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -362,7 +297,7 @@ export default function Admin() {
       setPrice("");
       setImageFile(null);
 
-      await loadProducts();
+      await reloadProducts();
       alert("Product added");
     } catch (err) {
       alert(err?.response?.data?.msg || err.message || "Add product failed");
@@ -376,8 +311,8 @@ export default function Admin() {
 
     setLoading(true);
     try {
-      await axios.delete(`${API_BASE}/api/products/${id}`);
-      await loadProducts();
+      await axios.delete(`${API_ROOT}/api/products/${id}`);
+      await reloadProducts();
     } catch (err) {
       alert(err?.response?.data?.msg || err.message || "Delete failed");
     } finally {
@@ -385,7 +320,6 @@ export default function Admin() {
     }
   };
 
-  // ✅ user PUT + DELETE
   const startEditUser = (u) => {
     setEditingUserId(u._id);
     setEditUsername(u.user || "");
@@ -407,9 +341,9 @@ export default function Admin() {
       const payload = { user: editUsername.trim() };
       if (editPassword) payload.pass = editPassword;
 
-      await axios.put(`${API_BASE}/api/auth/users/${id}`, payload);
-      await loadUsers();
+      await axios.put(`${API_ROOT}/api/auth/users/${id}`, payload);
 
+      await reloadUsers();
       cancelEditUser();
       alert("User updated");
     } catch (err) {
@@ -421,13 +355,14 @@ export default function Admin() {
 
   const deleteUser = async (id) => {
     if (loading) return;
+
     const ok = window.confirm("Delete this user? This cannot be undone.");
     if (!ok) return;
 
     setLoading(true);
     try {
-      await axios.delete(`${API_BASE}/api/auth/users/${id}`);
-      await loadUsers();
+      await axios.delete(`${API_ROOT}/api/auth/users/${id}`);
+      await reloadUsers();
       alert("User deleted");
     } catch (err) {
       alert(err?.response?.data?.msg || err.message || "Delete failed");
@@ -436,18 +371,13 @@ export default function Admin() {
     }
   };
 
-  const imgSrc = (p) => {
-    const path = p?.imageUrl || p?.image;
-    if (!path) return "";
-    if (path.startsWith("http")) return path;
-    return `${SERVER_BASE}${path}`;
-  };
-
   return (
     <div style={styles.page}>
       <div style={styles.header}>
         <h2 style={styles.title}>Admin Panel</h2>
-        <div style={styles.subtitle}>Manage products, customers and order history</div>
+        <div style={styles.subtitle}>
+          Manage products, customers and order history
+        </div>
       </div>
 
       <div style={styles.layout}>
@@ -489,10 +419,16 @@ export default function Admin() {
                 accept="image/*"
                 onChange={(e) => setImageFile(e.target.files?.[0] || null)}
               />
-              <div style={styles.smallNote}>Max 2MB. Allowed: jpg, png, webp.</div>
+              <div style={styles.smallNote}>
+                Max 2MB. Allowed: jpg, png, webp.
+              </div>
             </div>
 
-            <button style={styles.btn(loading)} onClick={addProduct} disabled={loading}>
+            <button
+              style={styles.btn(loading)}
+              onClick={addProduct}
+              disabled={loading}
+            >
               {loading ? "Saving..." : "Add Product"}
             </button>
           </section>
@@ -515,7 +451,9 @@ export default function Admin() {
                       <p style={styles.productName}>{p.name}</p>
                       <div style={styles.productMeta}>
                         <span>£{Number(p.price || 0)}</span>
-                        <span style={styles.pill}>ID: {String(p._id).slice(-6)}</span>
+                        <span style={styles.pill}>
+                          ID: {String(p._id).slice(-6)}
+                        </span>
                       </div>
                     </div>
                     <button
@@ -556,7 +494,7 @@ export default function Admin() {
                     </div>
 
                     <ul style={styles.orderList}>
-                      {order.items.map((item, idx) => (
+                      {order.items?.map((item, idx) => (
                         <li key={idx}>
                           {item.name} – £{Number(item.price || 0)}
                         </li>
@@ -588,7 +526,9 @@ export default function Admin() {
                         <div style={styles.userLeft}>
                           <p style={styles.userName}>{u.user}</p>
                           <div style={styles.userSub}>
-                            <span style={styles.rolePill}>Role: {u.role || "user"}</span>
+                            <span style={styles.rolePill}>
+                              Role: {u.role || "user"}
+                            </span>
                             {u.createdAt && (
                               <span style={styles.pill}>
                                 Joined: {new Date(u.createdAt).toLocaleDateString()}
@@ -597,7 +537,9 @@ export default function Admin() {
                           </div>
                         </div>
 
-                        <span style={styles.pill}>ID: {String(u._id).slice(-6)}</span>
+                        <span style={styles.pill}>
+                          ID: {String(u._id).slice(-6)}
+                        </span>
                       </div>
 
                       {isEditing ? (
