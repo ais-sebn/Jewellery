@@ -3,7 +3,7 @@ import axios from "axios";
 const API_BASE = import.meta.env.REACT_API_URL;
 
 // const API_BASE = "http://localhost:3000/api";
-const SERVER_BASE = "http://localhost:3000"; // serves /uploads
+const SERVER_BASE = import.meta.env.REACT_API_URL; // serves /uploads
 
 export default function Admin() {
   const [products, setProducts] = useState([]);

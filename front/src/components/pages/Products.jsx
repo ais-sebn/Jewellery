@@ -5,7 +5,7 @@ export default function Products() {
   const [products, setProducts] = useState([]);
   const { addToCart } = useCart();
   const API_BASE = import.meta.env.REACT_API_URL;
-  const SERVER_BASE = "http://localhost:3000";
+  const SERVER_BASE = import.meta.env.REACT_API_URL;
 
 
   useEffect(() => {
