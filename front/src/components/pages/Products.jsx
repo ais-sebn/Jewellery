@@ -4,8 +4,11 @@ import { useCart } from "../context/CartContext";
 export default function Products() {
   const [products, setProducts] = useState([]);
   const { addToCart } = useCart();
-  const API_BASE = import.meta.env.REACT_API_URL;
-  const SERVER_BASE = import.meta.env.REACT_API_URL;
+ const API_ROOT =
+  process.env.REACT_API_URL?.replace(/\/$/, "") || "http://localhost:3000";
+
+const API_BASE = API_ROOT;      // used for API calls
+const SERVER_BASE = API_ROOT;
 
 
   useEffect(() => {
