@@ -6,47 +6,54 @@ require("dotenv").config();
 
 const app = express();
 
-// ✅ Middleware
+// Middleware
 app.use(express.json());
 
-// ✅ Serve uploaded images
+// Serve uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// ✅ CORS (allow your React frontend)
+// CORS
 const allowedOrigins = [
-  "http://localhost:5173", // Vite default
-  "http://localhost:3000", // CRA default
-  "http://localhost:3001", // if you really use this
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "http://localhost:3001",
+  "https://jewellerydomain.netlify.app",
 ];
 
 app.use(
   cors({
-    origin:["http://localhost:3000", "https://jewellerydomain.netlify.app"],
-    
+    origin: function (origin, callback) {
+      // allow requests with no origin (Postman, curl)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
 
-// ✅ Database connection
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB Atlas connected"))
-  .catch((err) => {
-    console.error("❌ MongoDB connection failed:", err.message);
-    process.exit(1);
-  });
-
-// ✅ Routes (use lowercase folder name)
-app.use("/api/auth", require("./routes/authRoutes"));
+// Routes
+app.use("/api/auth", require("./Routes/authRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/orders", require("./routes/orderRoutes"));
 
-// ✅ Health check
+// Health check
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
-// ✅ Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+// DB + Start
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("✅ MongoDB Atlas connected");
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB connection failed:", err.message);
+    process.exit(1);
+  });
