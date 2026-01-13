@@ -128,53 +128,50 @@ export default function Login() {
     },
   };
 
- const submit = async () => {
+ // submit should accept the event now
+const submit = async (e) => {
+  e.preventDefault();
+
   if (!user || !pass) return alert("Username and password required");
+  if (loading) return;
 
   setLoading(true);
   try {
-    const res = await fetch(`${API_BASE}/api/auth/login`, {
+    const res = await fetch(apiUrl("/api/auth/login"), {
       method: "POST",
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user, pass }),
     });
 
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.msg || "Invalid login");
-    }
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.msg || "Invalid login");
 
-    const data = await res.json();
-
-    // store auth data (context/localStorage/etc.)
     login(data);
 
-    // 🔑 ROLE-BASED NAVIGATION
-    if (data.role === "admin") {
-      navigate("/admindashboard");
-    } else {
-      navigate("/dashboard");
-    }
+    if (data.role === "admin") navigate("/admindashboard");
+    else navigate("/dashboard");
   } catch (err) {
-    alert(err.message);
+    alert(err.message || "Login failed");
   } finally {
     setLoading(false);
   }
 };
 
+return (
+  <div style={styles.page}>
+    <div style={styles.card}>
+      <div style={styles.brandRow}>
+        <div style={styles.brand}>Elegant Jewellery</div>
+        <div style={styles.badge}>Secure Access</div>
+      </div>
 
-  return (
-    <div style={styles.page}>
-      <div style={styles.card}>
-        <div style={styles.brandRow}>
-          <div style={styles.brand}>Elegant Jewellery</div>
-          <div style={styles.badge}>Secure Access</div>
-        </div>
+      <h2 style={styles.title}>Welcome back</h2>
+      <p style={styles.subtitle}>
+        Sign in to browse premium collections, manage your cart, and place orders securely.
+      </p>
 
-        <h2 style={styles.title}>Welcome back</h2>
-        <p style={styles.subtitle}>
-          Sign in to browse premium collections, manage your cart, and place orders securely.
-        </p>
-
+      {/* ✅ Put inputs + button inside a real form */}
+      <form onSubmit={submit}>
         <div style={styles.fieldWrap}>
           <div>
             <div style={styles.label}>Username</div>
@@ -200,26 +197,18 @@ export default function Login() {
           </div>
         </div>
 
-        {/* {<div style={styles.helpRow}> */}
-          {/* <span>Role-based access enabled</span>
-          <span style={{ color: "#a5b4fc" }}>API + MongoDB Atlas</span>
-        </div> */} 
-
-        <button
-          style={styles.btn(loading)}
-          onClick={submit}
-          disabled={loading}
-        >
+        <button type="submit" style={styles.btn(loading)} disabled={loading}>
           {loading ? "Signing in..." : "Login"}
         </button>
+      </form>
 
-        <div style={styles.small}>
-          New user?{" "}
-          <Link to="/register" style={styles.link}>
-            Create an account
-          </Link>
-        </div>
+      <div style={styles.small}>
+        New user?{" "}
+        <Link to="/register" style={styles.link}>
+          Create an account
+        </Link>
       </div>
     </div>
-  );
+  </div>
+);
 }
