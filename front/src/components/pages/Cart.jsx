@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import { apiUrl } from "../api";
+import { apiUrl } from "../../api";
 
 export default function Cart() {
   const { cart, clearCart, removeFromCart } = useCart();

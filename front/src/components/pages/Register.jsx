@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { apiUrl } from "../api";
+import { apiUrl } from "../../api";
 
 export default function Register() {
   const [user, setUser] = useState("");
