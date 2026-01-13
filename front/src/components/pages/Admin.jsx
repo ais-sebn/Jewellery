@@ -232,10 +232,9 @@ export default function Admin() {
     const path = p?.imageUrl || p?.image || "";
     if (!path) return "";
     if (path.startsWith("http")) return path;
-    return `${API_ROOT}${path}`;
+    return `${API_BASE}${path}`;
   };
 
-  // ✅ NO loadAll dependency issue: run inside useEffect directly
   useEffect(() => {
     let alive = true;
 

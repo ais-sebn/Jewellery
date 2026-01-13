@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useCart } from "../context/CartContext";
 
-// ✅ CRA: env must start with REACT_APP_
-// In Netlify set: REACT_APP_API_URL = https://your-backend.onrender.com
 const API_BASE = process.env.REACT_APP_API_URL;
 
 export default function Products() {
@@ -122,7 +120,7 @@ export default function Products() {
     const path = p?.imageUrl || p?.image || "";
     if (!path) return "";
     if (path.startsWith("http")) return path;
-    return `${API_ROOT}${path}`; // backend serves /uploads
+    return `${API_BASE}${path}`; // backend serves /uploads
   };
 
   return (
