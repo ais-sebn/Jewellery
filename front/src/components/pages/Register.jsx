@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { apiUrl } from "../../api";
 
 export default function Register() {
   const [user, setUser] = useState("");
@@ -9,7 +8,7 @@ export default function Register() {
   const [role, setRole] = useState("user");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+const API_BASE = process.env.REACT_APP_API_URL;
   const styles = {
     page: {
       minHeight: "100vh",
@@ -89,6 +88,14 @@ export default function Register() {
       outline: "none",
       fontSize: "14px",
     },
+    hintRow: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginTop: "10px",
+      fontSize: "13px",
+      color: "#94a3b8",
+    },
     btn: (disabled) => ({
       width: "100%",
       marginTop: "16px",
@@ -124,15 +131,18 @@ export default function Register() {
 
   const submit = async () => {
     if (!user || !pass) return alert("Username and password required");
-    if (loading) return;
 
     setLoading(true);
     try {
-      await axios.post(apiUrl("/api/auth/register"), { user, pass, role });
+      await axios.post(`${API_BASE}/api/auth/register`, {
+        user,
+        pass,
+        role,
+      });
       alert("Registered successfully");
       navigate("/");
     } catch (err) {
-      alert(err?.response?.data?.msg || err?.message || "Registration failed");
+      alert(err?.response?.data?.msg || "Registration failed");
     } finally {
       setLoading(false);
     }
@@ -181,8 +191,14 @@ export default function Register() {
             onChange={(e) => setRole(e.target.value)}
           >
             <option value="user">User</option>
+            
           </select>
-        </div>
+
+           {/* <div style={styles.hintRow}>
+            <span>Remote DB: MongoDB Atlas</span>
+            <span>API: Express + CORS</span>
+          </div> */}
+        </div> 
 
         <button style={styles.btn(loading)} onClick={submit} disabled={loading}>
           {loading ? "Creating account..." : "Register"}
