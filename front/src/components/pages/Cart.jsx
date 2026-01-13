@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-
+import { apiUrl } from "../api";
 
 export default function Cart() {
   const { cart, clearCart, removeFromCart } = useCart();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
- const API_BASE = process.env.REACT_APP_API_URL;
 
   const total = cart.reduce((sum, i) => sum + Number(i.price || 0), 0);
 
@@ -109,7 +108,7 @@ export default function Cart() {
       fontSize: "14px",
       color: "#cbd5e1",
     },
-    total: {
+    totalStyle: {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
@@ -157,40 +156,39 @@ export default function Cart() {
   };
 
   const placeOrder = async () => {
-  if (!cart.length) return alert("Cart empty");
-  if (loading) return;
+    if (!cart.length) return alert("Cart empty");
+    if (loading) return;
 
-  const payload = {
-    date: new Date().toLocaleString(),
-    items: cart.map((i) => ({
-      name: i.name,
-      price: Number(i.price || 0),
-    })),
-    total,
-    username: user?.user || "guest",
-  };
+    const payload = {
+      date: new Date().toLocaleString(),
+      items: cart.map((i) => ({
+        name: i.name,
+        price: Number(i.price || 0),
+      })),
+      total,
+      username: user?.user || "guest",
+    };
 
-  setLoading(true);
-  try {
-    const res = await fetch(`${API_BASE}/api/orders`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    setLoading(true);
+    try {
+      const res = await fetch(apiUrl("/api/orders"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.msg || "Order failed");
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) throw new Error(data.msg || "Order failed");
+
+      clearCart();
+      alert("Order placed");
+    } catch (err) {
+      alert(err.message || "Order failed");
+    } finally {
+      setLoading(false);
     }
-
-    clearCart();
-    alert("Order placed");
-  } catch (err) {
-    alert(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div style={styles.page}>
@@ -203,7 +201,6 @@ export default function Cart() {
         <div style={styles.empty}>Your cart is empty.</div>
       ) : (
         <div style={styles.container}>
-          {/* Items */}
           <section style={styles.card}>
             <div
               style={{
@@ -237,7 +234,6 @@ export default function Cart() {
             </ul>
           </section>
 
-          {/* Summary */}
           <aside style={{ ...styles.card, ...styles.summaryBox }}>
             <div style={styles.pill}>Order Summary</div>
 
@@ -251,7 +247,7 @@ export default function Cart() {
               <span>{user?.user || "guest"}</span>
             </div>
 
-            <div style={styles.total}>
+            <div style={styles.totalStyle}>
               <span>Total</span>
               <span>₹{total}</span>
             </div>

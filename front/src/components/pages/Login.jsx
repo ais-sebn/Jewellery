@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
+import { apiUrl } from "../api";
 
 export default function Login() {
   const [user, setUser] = useState("");
@@ -8,7 +9,6 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
-  const API_BASE = process.env.REACT_APP_API_URL;
 
   const styles = {
     page: {
@@ -87,14 +87,6 @@ export default function Login() {
       outline: "none",
       fontSize: "14px",
     },
-    helpRow: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginTop: "10px",
-      color: "#94a3b8",
-      fontSize: "13px",
-    },
     btn: (disabled) => ({
       width: "100%",
       marginTop: "16px",
@@ -121,46 +113,36 @@ export default function Login() {
       textDecoration: "none",
       fontWeight: 700,
     },
-    errorHint: {
-      marginTop: "10px",
-      fontSize: "12px",
-      color: "#fca5a5",
-    },
   };
 
- const submit = async () => {
-  if (!user || !pass) return alert("Username and password required");
+  const submit = async () => {
+    if (!user || !pass) return alert("Username and password required");
+    if (loading) return;
 
-  setLoading(true);
-  try {
-    const res = await fetch(`${API_BASE}/api/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" }
-    });
+    setLoading(true);
+    try {
+      const res = await fetch(apiUrl("/api/auth/login"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user, pass }),
+      });
 
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.msg || "Invalid login");
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(data.msg || "Invalid login");
+      }
+
+      login(data);
+
+      if (data.role === "admin") navigate("/admindashboard");
+      else navigate("/dashboard");
+    } catch (err) {
+      alert(err.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
-
-    const data = await res.json();
-
-    // store auth data (context/localStorage/etc.)
-    login(data);
-
-    // 🔑 ROLE-BASED NAVIGATION
-    if (data.role === "admin") {
-      navigate("/admindashboard");
-    } else {
-      navigate("/dashboard");
-    }
-  } catch (err) {
-    alert(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <div style={styles.page}>
@@ -200,16 +182,7 @@ export default function Login() {
           </div>
         </div>
 
-        {/* {<div style={styles.helpRow}> */}
-          {/* <span>Role-based access enabled</span>
-          <span style={{ color: "#a5b4fc" }}>API + MongoDB Atlas</span>
-        </div> */} 
-
-        <button
-          style={styles.btn(loading)}
-          onClick={submit}
-          disabled={loading}
-        >
+        <button style={styles.btn(loading)} onClick={submit} disabled={loading}>
           {loading ? "Signing in..." : "Login"}
         </button>
 
