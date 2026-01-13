@@ -7,7 +7,7 @@ export default function Cart() {
   const { cart, clearCart, removeFromCart } = useCart();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  const API_BASE = import.meta.env.REACT_API_URL;
+ const API_BASE = process.env.REACT_APP_API_URL;
 
   const total = cart.reduce((sum, i) => sum + Number(i.price || 0), 0);
 

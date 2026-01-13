@@ -8,7 +8,7 @@ export default function Register() {
   const [role, setRole] = useState("user");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-const API_BASE = import.meta.env.REACT_API_URL;
+const API_BASE = process.env.REACT_APP_API_URL;
   const styles = {
     page: {
       minHeight: "100vh",
