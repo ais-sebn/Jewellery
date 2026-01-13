@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const API_ROOT =
-  (process.env.REACT_API_URL || "http://localhost:3000").replace(/\/$/, "");
+const API_BASE = process.env.REACT_APP_API_URL;
 
 export default function Admin() {
   const [products, setProducts] = useState([]);
@@ -244,9 +243,9 @@ export default function Admin() {
       setLoading(true);
       try {
         const [pRes, oRes, uRes] = await Promise.all([
-          axios.get(`${API_ROOT}/api/products`),
-          axios.get(`${API_ROOT}/api/orders`),
-          axios.get(`${API_ROOT}/api/auth/users`),
+          axios.get(`${API_BASE}/api/products`),
+          axios.get(`${API_BASE}/api/orders`),
+          axios.get(`${API_BASE}/api/auth/users`),
         ]);
 
         if (!alive) return;
@@ -268,12 +267,12 @@ export default function Admin() {
   }, []);
 
   const reloadProducts = async () => {
-    const res = await axios.get(`${API_ROOT}/api/products`);
+    const res = await axios.get(`${API_BASE}/api/products`);
     setProducts(Array.isArray(res.data) ? res.data : []);
   };
 
   const reloadUsers = async () => {
-    const res = await axios.get(`${API_ROOT}/api/auth/users`);
+    const res = await axios.get(`${API_BASE}/api/auth/users`);
     setUsers(Array.isArray(res.data) ? res.data : []);
   };
 
@@ -289,7 +288,7 @@ export default function Admin() {
       fd.append("price", String(price));
       fd.append("image", imageFile);
 
-      await axios.post(`${API_ROOT}/api/products`, fd, {
+      await axios.post(`${API_BASE}/api/products`, fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -311,7 +310,7 @@ export default function Admin() {
 
     setLoading(true);
     try {
-      await axios.delete(`${API_ROOT}/api/products/${id}`);
+      await axios.delete(`${API_BASE}/api/products/${id}`);
       await reloadProducts();
     } catch (err) {
       alert(err?.response?.data?.msg || err.message || "Delete failed");
@@ -341,7 +340,7 @@ export default function Admin() {
       const payload = { user: editUsername.trim() };
       if (editPassword) payload.pass = editPassword;
 
-      await axios.put(`${API_ROOT}/api/auth/users/${id}`, payload);
+      await axios.put(`${API_BASE}/api/auth/users/${id}`, payload);
 
       await reloadUsers();
       cancelEditUser();
@@ -361,7 +360,7 @@ export default function Admin() {
 
     setLoading(true);
     try {
-      await axios.delete(`${API_ROOT}/api/auth/users/${id}`);
+      await axios.delete(`${API_BASE}/api/auth/users/${id}`);
       await reloadUsers();
       alert("User deleted");
     } catch (err) {

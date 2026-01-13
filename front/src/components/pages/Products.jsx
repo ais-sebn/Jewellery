@@ -4,8 +4,7 @@ import { useCart } from "../context/CartContext";
 
 // ✅ CRA: env must start with REACT_APP_
 // In Netlify set: REACT_APP_API_URL = https://your-backend.onrender.com
-const API_ROOT =
-  (process.env.REACT_API_URL || "http://localhost:3000").replace(/\/$/, "");
+const API_BASE = process.env.REACT_APP_API_URL;
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -16,7 +15,7 @@ export default function Products() {
 
     const load = async () => {
       try {
-        const res = await axios.get(`${API_ROOT}/api/products`);
+        const res = await axios.get(`${API_BASE}/api/products`);
         if (alive) setProducts(Array.isArray(res.data) ? res.data : []);
       } catch (e) {
         alert("Failed to load products");
