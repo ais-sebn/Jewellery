@@ -137,11 +137,11 @@ const submit = async (e) => {
 
   setLoading(true);
   try {
-    const res = await fetch(apiUrl("/api/auth/login"), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user, pass }),
-    });
+    const res = await fetch(`${API_BASE}/api/auth/login`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ user, pass }),
+})
 
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.msg || "Invalid login");
