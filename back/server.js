@@ -18,6 +18,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3001",
   "https://6965400e10dff034a7efbc16--jewellerydomain.netlify.app/",
+  "https://jewellerydomain.netlify.app/",
 ];
 
 app.use(
